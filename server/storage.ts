@@ -1,38 +1,83 @@
-import { type User, type InsertUser } from "@shared/schema";
-import { randomUUID } from "crypto";
-
-// modify the interface with any CRUD methods
-// you might need
+import { db } from "./db";
+import {
+  stocks,
+  investmentProfiles,
+  behavioralInteractions,
+  type InsertProfile,
+  type InsertInteraction,
+  type Stock,
+  type InvestmentProfile,
+  type SubmitPreferencesRequest
+} from "@shared/schema";
+import { eq, sql, inArray } from "drizzle-orm";
 
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  getRandomStocks(limit: number): Promise<Stock[]>;
+  createProfile(profile: InsertProfile): Promise<InvestmentProfile>;
+  getProfile(id: number): Promise<InvestmentProfile | undefined>;
+  getUserProfiles(userId: string): Promise<InvestmentProfile[]>;
+  saveInteractions(interactions: InsertInteraction[]): Promise<void>;
+  updateProfilePreferences(profileId: number, prefs: SubmitPreferencesRequest, preferenceVector: number[], finalWeightVector: number[]): Promise<InvestmentProfile>;
+  updateProfileWeights(profileId: number, finalWeightVector: number[]): Promise<InvestmentProfile>;
+  getAllStocks(): Promise<Stock[]>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-
-  constructor() {
-    this.users = new Map();
+export class DatabaseStorage implements IStorage {
+  async getRandomStocks(limit: number): Promise<Stock[]> {
+    return await db.select().from(stocks).orderBy(sql`RANDOM()`).limit(limit);
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  async createProfile(profile: InsertProfile): Promise<InvestmentProfile> {
+    const [newProfile] = await db.insert(investmentProfiles).values(profile).returning();
+    return newProfile;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+  async getProfile(id: number): Promise<InvestmentProfile | undefined> {
+    const [profile] = await db.select().from(investmentProfiles).where(eq(investmentProfiles.id, id));
+    return profile;
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+  async getUserProfiles(userId: string): Promise<InvestmentProfile[]> {
+    return await db.select().from(investmentProfiles).where(eq(investmentProfiles.userId, userId)).orderBy(sql`${investmentProfiles.createdAt} DESC`);
+  }
+
+  async saveInteractions(interactions: InsertInteraction[]): Promise<void> {
+    if (interactions.length > 0) {
+      await db.insert(behavioralInteractions).values(interactions);
+    }
+  }
+
+  async updateProfilePreferences(
+    profileId: number, 
+    prefs: SubmitPreferencesRequest, 
+    preferenceVector: number[], 
+    finalWeightVector: number[]
+  ): Promise<InvestmentProfile> {
+    const [updated] = await db.update(investmentProfiles)
+      .set({
+        investmentGoal: prefs.investmentGoal,
+        preferredSectors: prefs.preferredSectors,
+        geography: prefs.geography,
+        capital: prefs.capital,
+        preferenceVector,
+        finalWeightVector
+      })
+      .where(eq(investmentProfiles.id, profileId))
+      .returning();
+    return updated;
+  }
+
+  async updateProfileWeights(profileId: number, finalWeightVector: number[]): Promise<InvestmentProfile> {
+    const [updated] = await db.update(investmentProfiles)
+      .set({ finalWeightVector })
+      .where(eq(investmentProfiles.id, profileId))
+      .returning();
+    return updated;
+  }
+
+  async getAllStocks(): Promise<Stock[]> {
+    return await db.select().from(stocks);
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
