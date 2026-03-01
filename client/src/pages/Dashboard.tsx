@@ -100,9 +100,11 @@ export default function Dashboard() {
                     <span className="text-xs text-muted-foreground">
                       {new Date(profile.createdAt).toLocaleDateString()}
                     </span>
-                    <button className="text-sm font-semibold text-cyan-400 group-hover:text-cyan-300 flex items-center">
-                      View Details <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                    </button>
+                    <Link href={`/profile/${profile.id}`}>
+                      <button className="text-sm font-semibold text-cyan-400 group-hover:text-cyan-300 flex items-center">
+                        View Details <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                      </button>
+                    </Link>
                   </div>
                 </div>
               ))}

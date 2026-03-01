@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRandomStocks } from "@/hooks/use-stocks";
 import { useSubmitBehavioral } from "@/hooks/use-wizard";
-import { X, Heart, TrendingUp, AlertTriangle, ArrowRight, Loader2 } from "lucide-react";
+import { X, Heart, TrendingUp, AlertTriangle, ArrowRight, Loader2, ActivitySquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -121,31 +121,58 @@ export function BehavioralStep({ onNext }: { onNext: (profileId: number) => void
               </div>
             </div>
 
-            <div className="space-y-6">
-              <div className="bg-secondary/30 rounded-2xl p-5 border border-white/5">
+            <div className="space-y-4">
+              <div className="bg-secondary/30 rounded-2xl p-4 border border-white/5">
                 <p className="text-sm text-muted-foreground mb-1">Current Price</p>
-                <p className="text-3xl font-mono font-semibold text-white">
+                <p className="text-2xl font-mono font-semibold text-white">
                   ${currentStock.price.toFixed(2)}
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-secondary/30 rounded-2xl p-4 border border-white/5">
-                  <div className="flex items-center space-x-2 text-muted-foreground mb-2">
-                    <TrendingUp className="w-4 h-4 text-emerald-400" />
-                    <span className="text-xs uppercase font-bold tracking-wider">Hist. CAGR</span>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-secondary/30 rounded-xl p-3 border border-white/5">
+                  <div className="flex items-center space-x-2 text-muted-foreground mb-1">
+                    <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+                    <span className="text-[10px] uppercase font-bold tracking-wider">CAGR</span>
                   </div>
-                  <p className="text-xl font-mono text-emerald-400 font-medium">
+                  <p className="text-lg font-mono text-emerald-400 font-medium">
                     {(currentStock.cagr * 100).toFixed(1)}%
                   </p>
                 </div>
-                <div className="bg-secondary/30 rounded-2xl p-4 border border-white/5">
-                  <div className="flex items-center space-x-2 text-muted-foreground mb-2">
-                    <AlertTriangle className="w-4 h-4 text-amber-400" />
-                    <span className="text-xs uppercase font-bold tracking-wider">Volatility</span>
+                <div className="bg-secondary/30 rounded-xl p-3 border border-white/5">
+                  <div className="flex items-center space-x-2 text-muted-foreground mb-1">
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                    <span className="text-[10px] uppercase font-bold tracking-wider">Vol.</span>
                   </div>
-                  <p className="text-xl font-mono text-amber-400 font-medium">
+                  <p className="text-lg font-mono text-amber-400 font-medium">
                     {(currentStock.volatility * 100).toFixed(1)}%
+                  </p>
+                </div>
+                <div className="bg-secondary/30 rounded-xl p-3 border border-white/5">
+                  <div className="flex items-center space-x-2 text-muted-foreground mb-1">
+                    <ActivitySquare className="w-3.5 h-3.5 text-blue-400" />
+                    <span className="text-[10px] uppercase font-bold tracking-wider">Skew</span>
+                  </div>
+                  <p className="text-lg font-mono text-blue-400 font-medium">
+                    {currentStock.skewness.toFixed(2)}
+                  </p>
+                </div>
+                <div className="bg-secondary/30 rounded-xl p-3 border border-white/5">
+                  <div className="flex items-center space-x-2 text-muted-foreground mb-1">
+                    <TrendingUp className="w-3.5 h-3.5 text-purple-400" />
+                    <span className="text-[10px] uppercase font-bold tracking-wider">Alpha</span>
+                  </div>
+                  <p className="text-lg font-mono text-purple-400 font-medium">
+                    {(currentStock.alpha * 100).toFixed(1)}%
+                  </p>
+                </div>
+                <div className="col-span-2 bg-secondary/30 rounded-xl p-3 border border-white/5">
+                  <div className="flex items-center space-x-2 text-muted-foreground mb-1">
+                    <Loader2 className="w-3.5 h-3.5 text-orange-400" />
+                    <span className="text-[10px] uppercase font-bold tracking-wider">Recovery Time</span>
+                  </div>
+                  <p className="text-lg font-mono text-orange-400 font-medium">
+                    {currentStock.recoveryTime} Days
                   </p>
                 </div>
               </div>

@@ -12,6 +12,8 @@ import Landing from "@/pages/Landing";
 import Dashboard from "@/pages/Dashboard";
 import Wizard from "@/pages/Wizard";
 
+import ProfileDetails from "@/pages/ProfileDetails";
+
 function AppRouter() {
   const { user, isLoading } = useAuth();
 
@@ -37,6 +39,7 @@ function AppRouter() {
   return (
     <Switch>
       <Route path="/" component={Dashboard} />
+      <Route path="/profile/:id" component={ProfileDetails} />
       <Route path="/wizard" component={Wizard} />
       <Route component={NotFound} />
     </Switch>
