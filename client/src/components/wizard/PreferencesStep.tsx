@@ -99,6 +99,7 @@ export function PreferencesStep({ profileId, onNext }: { profileId: number, onNe
               required
             >
               <option value="US">US Markets Only</option>
+              <option value="India">Indian Markets</option>
               <option value="Global">Global Developed</option>
               <option value="Emerging">Emerging Markets</option>
             </select>

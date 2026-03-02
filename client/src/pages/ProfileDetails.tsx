@@ -148,6 +148,30 @@ export default function ProfileDetails() {
                             </div>
                           </div>
                         </CardContent>
+                        <CardContent className="px-6 pb-6 pt-0 border-t border-white/5 mt-4">
+                          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-4">
+                            <div>
+                              <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1">CAGR</p>
+                              <p className="text-sm font-mono text-emerald-400">{(item.stock.cagr * 100).toFixed(1)}%</p>
+                            </div>
+                            <div>
+                              <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Volatility</p>
+                              <p className="text-sm font-mono text-amber-400">{(item.stock.volatility * 100).toFixed(1)}%</p>
+                            </div>
+                            <div>
+                              <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Skewness</p>
+                              <p className="text-sm font-mono text-blue-400">{item.stock.skewness.toFixed(2)}</p>
+                            </div>
+                            <div>
+                              <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Alpha</p>
+                              <p className="text-sm font-mono text-purple-400">{(item.stock.alpha * 100).toFixed(1)}%</p>
+                            </div>
+                            <div>
+                              <p className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Recovery</p>
+                              <p className="text-sm font-mono text-orange-400">{item.stock.recoveryTime}d</p>
+                            </div>
+                          </div>
+                        </CardContent>
                       </Card>
                     ))}
                   </div>
