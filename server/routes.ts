@@ -83,6 +83,15 @@ export async function registerRoutes(
     res.json(profile);
   });
 
+  app.delete(api.profiles.delete.path, isAuthenticated, async (req: any, res) => {
+    const profile = await storage.getProfile(Number(req.params.id));
+    if (!profile) return res.status(404).json({ message: "Not found" });
+    if (profile.userId !== req.user.claims.sub) return res.status(401).json({ message: "Unauthorized" });
+    
+    await storage.deleteProfile(Number(req.params.id));
+    res.json({ success: true });
+  });
+
   app.post(api.behavioral.submit.path, isAuthenticated, async (req: any, res) => {
     try {
       const input = api.behavioral.submit.input.parse(req.body);

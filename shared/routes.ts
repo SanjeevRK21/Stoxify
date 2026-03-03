@@ -43,6 +43,16 @@ export const api = {
       }
     }
   },
+    delete: {
+      method: 'DELETE' as const,
+      path: '/api/profiles/:id' as const,
+      responses: {
+        200: z.object({ success: z.boolean() }),
+        404: errorSchemas.notFound,
+        401: errorSchemas.unauthorized,
+      }
+    }
+  },
   behavioral: {
     submit: {
       method: 'POST' as const,

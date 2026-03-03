@@ -1,18 +1,34 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { useProfile } from "@/hooks/use-profiles";
 import { Navbar } from "@/components/layout/Navbar";
-import { useParams, Link } from "wouter";
-import { ChevronLeft, TrendingUp, AlertTriangle, ActivitySquare, Loader2, Target, Globe, Wallet } from "lucide-react";
+import { useParams, Link, useLocation } from "wouter";
+import { ChevronLeft, TrendingUp, AlertTriangle, ActivitySquare, Loader2, Target, Globe, Wallet, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import { api, buildUrl } from "@shared/routes";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function ProfileDetails() {
   const { id } = useParams<{ id: string }>();
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const { data: profile, isLoading: isLoadingProfile } = useProfile(Number(id));
   
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest("DELETE", buildUrl(api.profiles.delete.path, { id: Number(id) }));
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [api.profiles.list.path] });
+      toast({ title: "Profile deleted", description: "The investment profile has been removed." });
+      setLocation("/");
+    }
+  });
+
   const { data: recommendation, isLoading: isLoadingRec } = useQuery({
     queryKey: [api.recommend.generate.path, { profileId: Number(id), mode: 'diversify' }],
     enabled: !!profile,
@@ -38,11 +54,28 @@ export default function ProfileDetails() {
       <Navbar />
       
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
-        <Link href="/">
-          <Button variant="ghost" className="mb-8 text-muted-foreground hover:text-white">
-            <ChevronLeft className="mr-2 w-4 h-4" /> Back to Dashboard
+        <div className="flex items-center justify-between mb-8">
+          <Link href="/">
+            <Button variant="ghost" className="text-muted-foreground hover:text-white">
+              <ChevronLeft className="mr-2 w-4 h-4" /> Back to Dashboard
+            </Button>
+          </Link>
+          
+          <Button 
+            variant="destructive" 
+            size="sm"
+            onClick={() => {
+              if (confirm("Are you sure you want to delete this profile?")) {
+                deleteMutation.mutate();
+              }
+            }}
+            disabled={deleteMutation.isPending}
+            className="rounded-xl"
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            {deleteMutation.isPending ? "Deleting..." : "Delete Profile"}
           </Button>
-        </Link>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1 space-y-6">
