@@ -181,6 +181,14 @@ export default function ProfileDetails() {
                             </div>
                           </div>
                         </CardContent>
+                        {profile.isActive && (
+                          <CardContent className="px-6 pb-6 pt-0 flex justify-end">
+                            <div className="flex items-center gap-2 text-emerald-400 bg-emerald-400/10 px-3 py-1.5 rounded-lg border border-emerald-400/20">
+                              <ActivitySquare className="w-4 h-4" />
+                              <span className="text-xs font-bold uppercase tracking-wider">Confirmed Asset</span>
+                            </div>
+                          </CardContent>
+                        )}
                         <CardContent className="px-6 pb-6 pt-0 border-t border-white/5 mt-4">
                           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-4">
                             <div>

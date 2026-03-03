@@ -41,8 +41,7 @@ export const api = {
         404: errorSchemas.notFound,
         401: errorSchemas.unauthorized,
       }
-    }
-  },
+    },
     delete: {
       method: 'DELETE' as const,
       path: '/api/profiles/:id' as const,
