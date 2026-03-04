@@ -2,8 +2,39 @@ import { useAuth } from "@/hooks/use-auth";
 import { useProfiles } from "@/hooks/use-profiles";
 import { Navbar } from "@/components/layout/Navbar";
 import { Link } from "wouter";
-import { Plus, Briefcase, ChevronRight, ActivitySquare, AlertCircle } from "lucide-react";
+import { Plus, Briefcase, ChevronRight, ActivitySquare, AlertCircle, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@shared/routes";
+
+function ProfileRecommendations({ profileId }: { profileId: number }) {
+  const { data: recommendation } = useQuery({
+    queryKey: [api.recommend.generate.path, { profileId, mode: 'diversify' }],
+    staleTime: 1000 * 60 * 5,
+  });
+
+  if (!recommendation?.allocations?.length) return null;
+
+  return (
+    <div className="mt-4 pt-4 border-t border-white/5">
+      <p className="text-[10px] uppercase font-bold text-muted-foreground mb-2 flex items-center gap-1">
+        <TrendingUp className="w-3 h-3" /> Confirmed Assets
+      </p>
+      <div className="flex flex-wrap gap-1.5">
+        {recommendation.allocations.slice(0, 3).map((item: any) => (
+          <span key={item.stock.id} className="px-2 py-0.5 rounded-md bg-cyan-500/10 text-cyan-400 text-[10px] font-bold border border-cyan-500/20">
+            {item.stock.ticker}
+          </span>
+        ))}
+        {recommendation.allocations.length > 3 && (
+          <span className="text-[10px] text-muted-foreground font-medium">
+            +{recommendation.allocations.length - 3} more
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -82,7 +113,7 @@ export default function Dashboard() {
                       )}
                     </div>
                     
-                    <div className="space-y-2 mb-6">
+                    <div className="space-y-2 mb-4">
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Goal</span>
                         <span className="text-white font-medium">{profile.investmentGoal || 'Pending'}</span>
@@ -94,9 +125,11 @@ export default function Dashboard() {
                         </span>
                       </div>
                     </div>
+
+                    {profile.isActive && <ProfileRecommendations profileId={profile.id} />}
                   </div>
                   
-                  <div className="pt-4 border-t border-white/5 flex items-center justify-between mt-auto">
+                  <div className="pt-4 border-t border-white/5 flex items-center justify-between mt-6">
                     <span className="text-xs text-muted-foreground">
                       {new Date(profile.createdAt).toLocaleDateString()}
                     </span>
