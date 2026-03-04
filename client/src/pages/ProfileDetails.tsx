@@ -157,7 +157,10 @@ export default function ProfileDetails() {
                 </Card>
 
                 <div className="space-y-4">
-                  <h3 className="text-xl font-bold text-white">Allocation Details</h3>
+                  <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                    <ActivitySquare className="w-5 h-5 text-primary" />
+                    Recommended Portfolio
+                  </h3>
                   <div className="grid gap-4">
                     {recommendation.allocations.map((item: any, index: number) => (
                       <Card key={item.stock.id} className="glass-card border-white/5 hover:border-white/10 transition-all">
