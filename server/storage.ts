@@ -19,6 +19,7 @@ export interface IStorage {
   saveInteractions(interactions: InsertInteraction[]): Promise<void>;
   updateProfilePreferences(profileId: number, prefs: SubmitPreferencesRequest, preferenceVector: number[], finalWeightVector: number[]): Promise<InvestmentProfile>;
   updateProfileWeights(profileId: number, finalWeightVector: number[]): Promise<InvestmentProfile>;
+  saveConfirmedPortfolio(profileId: number, portfolio: PortfolioAllocation[]): Promise<void>;
   deleteProfile(id: number): Promise<void>;
   getAllStocks(): Promise<Stock[]>;
 }
@@ -31,6 +32,12 @@ export class DatabaseStorage implements IStorage {
   async createProfile(profile: InsertProfile): Promise<InvestmentProfile> {
     const [newProfile] = await db.insert(investmentProfiles).values(profile).returning();
     return newProfile;
+  }
+
+  async saveConfirmedPortfolio(profileId: number, portfolio: PortfolioAllocation[]): Promise<void> {
+    await db.update(investmentProfiles)
+      .set({ confirmedPortfolio: portfolio })
+      .where(eq(investmentProfiles.id, profileId));
   }
 
   async deleteProfile(id: number): Promise<void> {

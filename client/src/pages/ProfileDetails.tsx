@@ -31,10 +31,14 @@ export default function ProfileDetails() {
 
   const { data: recommendation, isLoading: isLoadingRec } = useQuery({
     queryKey: [api.recommend.generate.path, { profileId: Number(id), mode: 'diversify' }],
-    enabled: !!profile,
+    enabled: !!profile && !profile.confirmedPortfolio,
   });
 
-  if (isLoadingProfile || isLoadingRec) {
+  const finalAllocations = profile?.confirmedPortfolio || recommendation?.allocations;
+  const totalInvested = finalAllocations?.reduce((sum: number, item: any) => sum + item.investmentAmount, 0) || 0;
+  const remainingCapital = (profile?.capital || 0) - totalInvested;
+
+  if (isLoadingProfile || (isLoadingRec && !profile?.confirmedPortfolio)) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center">
         <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
@@ -123,7 +127,7 @@ export default function ProfileDetails() {
           </div>
 
           <div className="lg:col-span-2 space-y-8">
-            {recommendation && (
+            {finalAllocations && (
               <>
                 <Card className="glass-card border-white/5">
                   <CardHeader>
@@ -133,20 +137,21 @@ export default function ProfileDetails() {
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
-                          data={recommendation.allocations}
+                          data={finalAllocations}
                           cx="50%"
                           cy="50%"
                           innerRadius={60}
                           outerRadius={80}
                           paddingAngle={5}
-                          dataKey="allocationPercent"
+                          dataKey="investmentAmount"
                           nameKey="stock.ticker"
                         >
-                          {recommendation.allocations.map((entry: any, index: number) => (
+                          {finalAllocations.map((entry: any, index: number) => (
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                           ))}
                         </Pie>
                         <Tooltip 
+                          formatter={(value: number) => `$${value.toLocaleString()}`}
                           contentStyle={{ backgroundColor: '#18181b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
                           itemStyle={{ color: '#fff' }}
                         />
@@ -159,10 +164,10 @@ export default function ProfileDetails() {
                 <div className="space-y-4">
                   <h3 className="text-xl font-bold text-white flex items-center gap-2">
                     <ActivitySquare className="w-5 h-5 text-primary" />
-                    Recommended Portfolio
+                    {profile.confirmedPortfolio ? "Confirmed Portfolio" : "Recommended Portfolio"}
                   </h3>
                   <div className="grid gap-4">
-                    {recommendation.allocations.map((item: any, index: number) => (
+                    {finalAllocations.map((item: any, index: number) => (
                       <Card key={item.stock.id} className="glass-card border-white/5 hover:border-white/10 transition-all">
                         <CardContent className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                           <div>

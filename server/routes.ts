@@ -225,8 +225,13 @@ export async function registerRoutes(
       const input = api.feedback.submit.input.parse(req.body);
       const profile = await storage.getProfile(input.profileId);
       
-      if (!profile || profile.userId !== req.user.claims.sub) {
+      if (profile.userId !== req.user.claims.sub) {
         return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      // Save portfolio if provided
+      if (input.confirmed && input.portfolio) {
+        await storage.saveConfirmedPortfolio(profile.id, input.portfolio);
       }
 
       // Optional feedback loop: slightly adjust dominant weights

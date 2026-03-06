@@ -35,6 +35,7 @@ export const investmentProfiles = pgTable("investment_profiles", {
   geography: text("geography"),
   capital: real("capital"),
   isActive: boolean("is_active").default(true),
+  confirmedPortfolio: jsonb("confirmed_portfolio").$type<PortfolioAllocation[]>(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

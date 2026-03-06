@@ -22,7 +22,11 @@ export function RecommendationStep({ profileId }: { profileId: number }) {
 
   const handleFinish = (confirmed: boolean) => {
     feedback(
-      { profileId, confirmed },
+      { 
+        profileId, 
+        confirmed,
+        portfolio: confirmed ? recData.allocations : undefined 
+      },
       { onSuccess: () => setLocation("/") }
     );
   };
@@ -95,7 +99,7 @@ export function RecommendationStep({ profileId }: { profileId: number }) {
                   innerRadius={70}
                   outerRadius={100}
                   paddingAngle={5}
-                  dataKey="allocationPercent"
+                  dataKey="investmentAmount"
                   nameKey="stock.ticker"
                   stroke="none"
                 >
@@ -104,7 +108,7 @@ export function RecommendationStep({ profileId }: { profileId: number }) {
                   ))}
                 </Pie>
                 <Tooltip 
-                  formatter={(value: number) => `${(value * 100).toFixed(1)}%`}
+                  formatter={(value: number) => `$${value.toLocaleString()}`}
                   contentStyle={{ backgroundColor: 'hsl(222, 47%, 11%)', borderColor: 'hsl(217, 32%, 17%)', borderRadius: '12px', color: '#fff' }}
                   itemStyle={{ color: '#fff' }}
                 />

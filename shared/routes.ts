@@ -121,6 +121,13 @@ export const api = {
       input: z.object({
         profileId: z.number(),
         confirmed: z.boolean(),
+        portfolio: z.array(z.object({
+          stock: z.custom<typeof stocks.$inferSelect>(),
+          score: z.number(),
+          allocationPercent: z.number(),
+          investmentAmount: z.number(),
+          shares: z.number(),
+        })).optional(),
       }),
       responses: {
         200: z.object({ success: z.boolean() }),
