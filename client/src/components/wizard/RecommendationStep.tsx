@@ -82,6 +82,22 @@ export function RecommendationStep({ profileId }: { profileId: number }) {
     );
   }
 
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length > 0) {
+      const data = payload[0].payload;
+      const percentage = (data.investmentAmount / recData.totalInvested * 100).toFixed(1);
+      return (
+        <div className="bg-secondary/80 backdrop-blur-sm border border-white/10 rounded-lg p-3 shadow-xl">
+          <p className="text-white font-bold text-sm">{data.stock.ticker}</p>
+          <p className="text-cyan-400 text-xs mt-1">${data.investmentAmount.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
+          <p className="text-emerald-400 text-xs">{data.shares} shares</p>
+          <p className="text-primary text-xs">{percentage}% of portfolio</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-5xl mx-auto mt-8">
       <div className="glass-card rounded-3xl overflow-hidden flex flex-col md:flex-row">
@@ -107,11 +123,7 @@ export function RecommendationStep({ profileId }: { profileId: number }) {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip 
-                  formatter={(value: number) => `$${value.toLocaleString()}`}
-                  contentStyle={{ backgroundColor: 'hsl(222, 47%, 11%)', borderColor: 'hsl(217, 32%, 17%)', borderRadius: '12px', color: '#fff' }}
-                  itemStyle={{ color: '#fff' }}
-                />
+                <Tooltip content={<CustomTooltip />} />
               </PieChart>
             </ResponsiveContainer>
           </div>

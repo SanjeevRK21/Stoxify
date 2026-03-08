@@ -151,9 +151,21 @@ export default function ProfileDetails() {
                           ))}
                         </Pie>
                         <Tooltip 
-                          formatter={(value: number) => `$${value.toLocaleString()}`}
-                          contentStyle={{ backgroundColor: '#18181b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                          itemStyle={{ color: '#fff' }}
+                          content={({ active, payload }: any) => {
+                            if (active && payload && payload.length > 0) {
+                              const data = payload[0].payload;
+                              const percentage = (data.investmentAmount / totalInvested * 100).toFixed(1);
+                              return (
+                                <div className="bg-secondary/80 backdrop-blur-sm border border-white/10 rounded-lg p-3 shadow-xl">
+                                  <p className="text-white font-bold text-sm">{data.stock.ticker}</p>
+                                  <p className="text-cyan-400 text-xs mt-1">${data.investmentAmount.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
+                                  <p className="text-emerald-400 text-xs">{data.shares} shares</p>
+                                  <p className="text-primary text-xs">{percentage}% of portfolio</p>
+                                </div>
+                              );
+                            }
+                            return null;
+                          }}
                         />
                         <Legend />
                       </PieChart>
