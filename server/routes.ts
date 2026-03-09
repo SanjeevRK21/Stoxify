@@ -164,7 +164,7 @@ export async function registerRoutes(
       
       // Filter stocks by geography and sectors
       let filteredStocks = allStocks;
-      if (profile.geography && profile.geography !== 'Global') {
+      if (profile.geography && profile.geography !== 'Global' && profile.geography !== 'All Markets') {
         filteredStocks = filteredStocks.filter(s => s.geography === profile.geography);
       }
       if (profile.preferredSectors && profile.preferredSectors.length > 0) {

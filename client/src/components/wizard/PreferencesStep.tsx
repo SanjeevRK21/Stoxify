@@ -11,7 +11,7 @@ const SECTORS = ['Tech', 'Health', 'Finance', 'Energy', 'Consumer', 'Industrials
 export function PreferencesStep({ profileId, onNext }: { profileId: number, onNext: () => void }) {
   const [goal, setGoal] = useState<'Capital Preservation' | 'Wealth Growth' | 'Short-term'>('Wealth Growth');
   const [sectors, setSectors] = useState<string[]>(['Tech', 'Health']);
-  const [geography, setGeography] = useState('US');
+  const [geography, setGeography] = useState('All Markets');
   const [capital, setCapital] = useState<string>("100000");
 
   const { mutate: submitPreferences, isPending } = useSubmitPreferences();
@@ -98,6 +98,7 @@ export function PreferencesStep({ profileId, onNext }: { profileId: number, onNe
               className="w-full h-14 rounded-xl text-lg bg-secondary/30 border border-white/10 focus:ring-2 focus:ring-primary focus:outline-none px-4 text-white appearance-none"
               required
             >
+              <option value="All Markets">All Markets</option>
               <option value="US">US Markets Only</option>
               <option value="India">Indian Markets</option>
               <option value="Global">Global Developed</option>
