@@ -229,6 +229,12 @@ export async function registerRoutes(
         return res.status(401).json({ message: "Unauthorized" });
       }
 
+      // If user discards, delete the entire profile
+      if (!input.confirmed) {
+        await storage.deleteProfile(profile.id);
+        return res.json({ success: true, deleted: true });
+      }
+
       // Save portfolio if provided
       if (input.confirmed && input.portfolio) {
         await storage.saveConfirmedPortfolio(profile.id, input.portfolio);
