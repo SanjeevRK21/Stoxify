@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, DollarSign, Target, Globe, Layers } from "lucide-react";
+import { playClick, playSelect } from "@/lib/sounds";
 
 const SECTORS = ['Tech', 'Health', 'Finance', 'Energy', 'Consumer', 'Industrials'];
 
@@ -17,8 +18,9 @@ export function PreferencesStep({ profileId, onNext }: { profileId: number, onNe
   const { mutate: submitPreferences, isPending } = useSubmitPreferences();
 
   const toggleSector = (sector: string) => {
-    setSectors(prev => 
-      prev.includes(sector) 
+    playSelect();
+    setSectors(prev =>
+      prev.includes(sector)
         ? prev.filter(s => s !== sector)
         : [...prev, sector]
     );
@@ -27,6 +29,7 @@ export function PreferencesStep({ profileId, onNext }: { profileId: number, onNe
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (sectors.length === 0 || !capital) return;
+    playClick();
     
     submitPreferences(
       {
@@ -77,7 +80,7 @@ export function PreferencesStep({ profileId, onNext }: { profileId: number, onNe
             </Label>
             <select
               value={goal}
-              onChange={(e) => setGoal(e.target.value as any)}
+                      onChange={(e) => { playSelect(); setGoal(e.target.value as any); }}
               className="w-full h-14 rounded-xl text-lg bg-secondary/30 border border-white/10 focus:ring-2 focus:ring-primary focus:outline-none px-4 text-white appearance-none"
               required
             >
@@ -94,7 +97,7 @@ export function PreferencesStep({ profileId, onNext }: { profileId: number, onNe
             </Label>
             <select
               value={geography}
-              onChange={(e) => setGeography(e.target.value)}
+              onChange={(e) => { playSelect(); setGeography(e.target.value); }}
               className="w-full h-14 rounded-xl text-lg bg-secondary/30 border border-white/10 focus:ring-2 focus:ring-primary focus:outline-none px-4 text-white appearance-none"
               required
             >
