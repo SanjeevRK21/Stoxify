@@ -21,7 +21,9 @@ function AppRouter() {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center">
         <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
-        <h2 className="text-xl font-display font-bold text-white animate-pulse">Initializing Aura...</h2>
+        <h2 className="text-xl font-display font-bold text-white animate-pulse">
+          Initializing Stoxify...
+        </h2>
       </div>
     );
   }
@@ -30,8 +32,9 @@ function AppRouter() {
   if (!user) {
     return (
       <Switch>
-        <Route path="/" component={Landing} />
-        <Route component={Landing} /> {/* Catch-all redirects to landing if not auth */}
+        <Route path="/" component={Landing} />Welcome
+        <Route component={Landing} />{" "}
+        {/* Catch-all redirects to landing if not auth */}
       </Switch>
     );
   }

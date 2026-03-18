@@ -246,7 +246,7 @@ export default function ProfileDetails() {
                           key={item.stock.id}
                           initial={{ opacity: 0, x: 30 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.3 + index * 0.08, duration: 0.45 }}
+                          transition={{ delay: 0.2 + index * 0.08, duration: 0.45 }}
                         >
                           <Card className="glass-card border-white/5 hover:border-white/10 transition-all elec-card overflow-hidden"
                             style={{ '--neon': neon } as React.CSSProperties}>
