@@ -153,7 +153,7 @@ Stoxify/
 ### Getting Started
 1. Clone the Repository
 ```
-git clone https://github.com/your-username/stoxify.git
+git clone https://github.com/SanjeevRK21/Stoxify.git
 cd stoxify
 ```
 2. Setup Frontend
